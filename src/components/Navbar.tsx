@@ -9,8 +9,7 @@ type Props = {};
  
 export default function Navbar({}: Props ) {
   const [value, setValue] = useState("");
-  const handleChange = (e) => {
-    setValue(e.target.value);
+  const handleChange = () => {
   }
   const handleSubmit = () => {
     console.log(value);
