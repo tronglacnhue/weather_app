@@ -1,9 +1,13 @@
 import React from "react";
+import { cn } from "@/utils/cn";
 
 type Props = {}
 
-export default function Container({}: Props ) {
+export default function Container(props: React.HTMLProps<HTMLDivElement> ) {
   return(
-    <div></div>
+    <div 
+    {...props}
+    className={cn("w-full bg-white border rounded-x1 flex py-4 shadow-sm", props.className)}
+    />
   );
 }
