@@ -7,6 +7,7 @@ import Image from "next/image";
 import format from "date-fns/format";
 import { useQuery } from "react-query";
 import Container from "@/components/Container";
+import WeatherIcon from "@/components/WeatherIcon";
 import { converKelvintoCelsius } from "@/utils/convertKelvintoCelsius";
 
 export default function Home() {
@@ -131,7 +132,13 @@ export default function Home() {
                   <div
                   key={i}
                   className="flex flex-col justify-between gap-2 items-center text-xs font-semibold"
-                  ></div>
+                  >
+                    <p className="whitespace-nowrap">
+                      {format(parseISO(d.dt_txt), "h:mm a" )}
+                    </p>
+                    <WeatherIcon iconName={d.weather[0].icon} />
+                    <p>{converKelvintoCelsius(d?.main.temp ?? 296.3 )}°</p>
+                  </div>
                 ))}
               </div>
             </Container>
