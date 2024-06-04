@@ -1,5 +1,6 @@
 'use client'
 
+import axios from "axios";
 import React, { useState } from "react";
 import { MdOutlineLocationOn, MdWbSunny } from "react-icons/md";
 import { MdOutlineMyLocation } from "react-icons/md";
@@ -8,11 +9,32 @@ import SearchBox from "./SearchBox";
 type Props = {};
  
 export default function Navbar({}: Props ) {
-  const [value, setValue] = useState("");
-  const handleChange = () => {
+  const [city, setCity] = useState("");
+  const [error, setError] = useState("");
+
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  // API_KEY = process.env.NEXT_PUBLIC_KEY;
+
+  const handleChange = async (value: string) =>  {
+    setCity(value);
+    if(value.length > 2) {
+      try {
+        const response = await axios.get(
+          `https://api.openweathermap.org/data/2.5/find?q=${value}&appid=49118bebffd3444d4479ce0ad56f6cd9`);
+        const suggestions = response.data.list.map( (item:any) => item.name );
+        setSuggestions(suggestions);
+        setError("");
+        setShowSuggestions(true);
+      } catch (error) {
+        setSuggestions([]);
+        setShowSuggestions(true)
+      }
+    }
   }
+
   const handleSubmit = () => {
-    console.log(value);
+    console.log(city);
   }
   return(
     <nav className="shadow-sm sticky top-0 left-0 z-50 bg-white" >
@@ -27,7 +49,7 @@ export default function Navbar({}: Props ) {
         <MdOutlineLocationOn className="text-3x1"/>
         <p className="text-slate-900/80 text-sm">Vietnam</p>
         <div>
-          <SearchBox value={value} onChange={handleChange} onSubmit={handleSubmit}/>
+          <SearchBox value={city} onChange={(e) => handleChange(e.target.value)} onSubmit={handleSubmit}/>
         </div>
         </section>  
       </div>
