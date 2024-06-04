@@ -14,9 +14,12 @@ import { metersToKilometers } from "@/utils/metersToKilometers";
 import WeatherDetails from "@/components/WeatherDetails";
 import { convertWindSpeed } from "@/utils/converWindSpeed";
 import ForecastWeatherDetails from "@/components/ForecastWeatherDetails";
+import { useAtom } from "jotai";
+import { placeAtom } from "./atom";
+import { useEffect } from "react";
 
 export default function Home() {
-
+  const[place, setPlace] = useAtom(placeAtom);
 
   interface WeatherDetail {
     dt: number;
@@ -73,14 +76,17 @@ export default function Home() {
     };
   }
   
-  const { isLoading, error, data } = useQuery<WeatherData>('repoData', async () => {
-    const {data} = await  axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=hanoi&appid=49118bebffd3444d4479ce0ad56f6cd9&cnt=56`);
+  const { isLoading, error, data, refetch } = useQuery<WeatherData>('repoData', async () => {
+    const {data} = await  axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=49118bebffd3444d4479ce0ad56f6cd9&cnt=56`);
     return data;
   }
     // fetch('https://api.openweathermap.org/data/2.5/forecast?q=pune&appid=49118bebffd3444d4479ce0ad56f6cd9&cnt=56').then(res =>
     //   res.json()
     // )
   )
+  useEffect( () => {
+    refetch();
+  }, [place, refetch] );
   // console.log(process.env.NEXT_PUBLIC_WEATHER_KEY);
   // console.log(process.env.NEXT_PUBLIC_VARIABLE);
 
@@ -115,7 +121,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-4 bg-gray-100 min-h-screen" >
-      <Navbar />
+      <Navbar location={data.city.name} />
       <main className="flex-col px-3 max-w-7x1 mx-auto flex gap-9 w-full pb-10 pt-4 ">
         {/* today data */}
         <section className="space-y-4">
